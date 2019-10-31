@@ -174,7 +174,19 @@
     <Compile Include="atraso.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="classes.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="classes.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="serial.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="serial.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
