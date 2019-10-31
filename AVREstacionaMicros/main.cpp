@@ -10,7 +10,90 @@
 
 #include "atraso.h"
 #include "serial.h"
-#include "classes.h"
+class DataHora{
+	public:
+		char dia;
+		char mes;
+		char hora;
+		char min;
+		DataHora(char _dia=1, char _mes=1, char _hora=0, char _min=0){
+			dia =_dia;
+			mes = _mes;
+			hora = _hora;
+			min = _min;			
+		}
+		void setByVector(char datahoravetor[4]){
+			dia = datahoravetor[0];
+			mes = datahoravetor[1];
+			hora  = datahoravetor[2];
+			min = datahoravetor[3];
+		}
+		DataHora somaMin(int minutos){
+			DataHora retorno(dia, mes, hora, min);
+			retorno.hora += minutos/60;
+			retorno.min += minutos%60;
+			
+			retorno.dia += retorno.hora/24;
+			retorno.hora = retorno.hora%24;
+			
+			if(retorno.min<0){
+				retorno.min += 60;
+				retorno.hora += 1;
+			}
+			if(retorno.hora<0){
+				retorno.hora +=24;
+				retorno.dia--;
+			}
+			if(retorno.dia<0){
+				retorno.dia +=30;
+				retorno.mes--;
+			}
+			return retorno;
+		}
+		unsigned long int diffMin(DataHora comp){
+			unsigned long int minutosTotal = (comp.dia - dia)*60*24; //Dias
+			minutosTotal += (comp.mes - mes)*24*60*30; //Meses de 30 dias
+			minutosTotal += (comp.hora - hora)*60; //Horas
+			minutosTotal += (comp.min - min); //Minutos
+			return minutosTotal;
+		}
+};
+class Veiculo {       // The class
+	public:             // Access specifier
+		char placa[8];
+		DataHora dataEntrada;
+		DataHora dataPagamento;
+		DataHora dataSaidaPaga;
+		
+		Veiculo(char _placa[7]="AAA0000", DataHora _dataEntrada = DataHora()){
+			for(int i=0; i<7; i++){
+				placa[i] = _placa[i];
+			}
+			placa[7] = '\0';
+			dataEntrada = _dataEntrada;
+			dataPagamento = _dataEntrada;
+			calculaSaidaPaga();		
+		}
+		
+		void pagou(DataHora _dataPagamento){
+			dataPagamento = _dataPagamento;
+			calculaSaidaPaga();
+		}
+	private:
+		void calculaSaidaPaga(){
+			unsigned long int minutosPagamento = dataEntrada.diffMin(dataPagamento);
+			if(minutosPagamento<=45){
+				dataSaidaPaga = dataEntrada.somaMin(60);
+			}else if(minutosPagamento%30){
+				dataSaidaPaga = dataEntrada.somaMin(minutosPagamento-minutosPagamento%60+30);
+			}else{
+				dataSaidaPaga = dataEntrada.somaMin(minutosPagamento);
+			}
+			if(dataSaidaPaga.diffMin(dataPagamento)<15){
+				dataSaidaPaga = dataPagamento.somaMin(15);
+			}
+		}
+};
 
 void bloqueia();
 void desbloqueia();
