@@ -4,6 +4,8 @@
  * Created: 29/10/2019 20:51:59
  *  Author: Lucas
  */ 
+#define TX_BUFFER_SIZE 64
+#define RX_BUFFER_SIZE 64
 
 
 #ifndef SERIAL_H_
