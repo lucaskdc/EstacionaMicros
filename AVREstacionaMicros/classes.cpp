@@ -78,3 +78,14 @@ void Veiculo::calculaSaidaPaga(){
 		dataSaidaPaga = dataPagamento.somaMin(15);
 	}
 }
+
+char Veiculo::ehEspecial(){
+	//retorna 1 se placa começa com IDE e 0 caso contrário
+	if(	this->placa[0] != 'I')
+		return 0;
+	if( this->placa[1] != 'D')
+		return 0;
+	if(this->placa[2] != 'E')
+		return 0;
+	return 1;
+}
