@@ -6,9 +6,8 @@
  */ 
 #include "teclado.h"
 
+
 char le_linha(){ // retorna linha precionada, -1 se todas desativadas
-	
-	
 	char valor_atual=-1;
 	if(!(LINHA0_MASK & LINHA_PIN)) //verifica valor atual (0->BOTAO ATIVO)
 	valor_atual=0;
@@ -22,13 +21,9 @@ char le_linha(){ // retorna linha precionada, -1 se todas desativadas
 	if(!(LINHA3_MASK & LINHA_PIN))
 	valor_atual=3;
 	return valor_atual;
-	
-	
-	
-	
 }
 void solta_tecla(char valor_anterior){
-	
+	char contador_2=0;
 	char contador=0;
 	char flag=1;
 	while(flag){
@@ -37,20 +32,12 @@ void solta_tecla(char valor_anterior){
 		else
 		contador=0;
 		
-		if(contador>=10)
-		flag=0;
+		if(contador>=10 | contador>= 100)
+			flag=0;
 		
-		atrasoms(10);
-		
-		
-	}
-	
-	
-	
-	
-	
-	
-	
+		contador_2++;
+		atrasoms(10);	
+	}	
 }
 char debounce_linha(void){ //retorna linha pós debounce
 	char contador=0;

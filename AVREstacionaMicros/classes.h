@@ -22,6 +22,8 @@ class DataHora{
 	char seg;
 	DataHora(char _dia=1, char _mes=1, char _hora=0, char _min=0);
 	void setByVector(char datahoravetor[4]); //entra vetor recebido da Serial SH_dia_mes_hora_min
+	void setByDataHora(DataHora a);
+	void setByDataHoraZeroSeconds(DataHora min);
 	DataHora somaMin(int minutos); //retorna data somada com minutos (não muda a data chamada)
 	void incSeg(char segundos=1);
 	long long int diffMin(DataHora comp); //calcula diferença em minutos comp - this
@@ -33,17 +35,18 @@ class Veiculo {
 	char placa[8];
 	DataHora dataEntrada;
 	DataHora dataPagamento;
-	DataHora dataSaidaPaga;
+	int valorpago=0;
 	char estado=FORA;
-	char reincidente=0;
+	char estEspecial = 0;
+	char estEspecialAntes=0;
 	
-	Veiculo(char _placa[7]="AAA0000", DataHora _dataEntrada = DataHora());
+	Veiculo(char _placa[7]="###0000", DataHora _dataEntrada = DataHora());
 	void pagou(DataHora _dataPagamento);
 	char ehEspecial();
 	char ehPlacaIgual(char compara[]);
-	
+	int pagar(int valor, DataHora agora);
+	int calculaPgto(DataHora agora);
 	private:
-	void calculaSaidaPaga();
 	
 };
 

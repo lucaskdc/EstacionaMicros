@@ -9,11 +9,23 @@
 #include <avr/interrupt.h>
 #include "classes.h"
 
-DataHora relogio;
+DataHora relogio(1,1,6,0);
+
+/*
+char tempoMostraAndares=0;
+char tempoCancela1Aberta=0;
+char tempoCancela2Aberta=0;
+*/
+
 ISR(TIMER1_OVF_vect){
 	TCNT1 = 3036; //1s até estourar
 	// 65536 - 16M/256 = 3036
 	relogio.incSeg();
+
+/*	tempoMostraAndares=0;
+	tempoCancela1Aberta++;
+	tempoCancela2Aberta++;
+*/
 }
 
 

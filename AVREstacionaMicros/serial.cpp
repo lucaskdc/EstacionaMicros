@@ -9,7 +9,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "serial.h"
-
+#include "atraso.h"
 char serialTXBuffer[TX_BUFFER_SIZE];
 char serialTXPosW = 0;
 char serialTXPosR = 0;
@@ -23,7 +23,7 @@ void serialSetup(){
 	UBRR0H = 0;
 	
 	UCSR0A = 0;
-	UCSR0B = (1<<RXEN0) | (1<<TXEN0) | (1<<TXCIE0) | (1<<RXCIE0); //ativa rx e tx e ISR de tx e rx
+	UCSR0B = (1<<RXEN0) | (1<<TXEN0) | /*(1<<TXCIE0)*/ (1<<UDRIE0) | (1<<RXCIE0); //ativa rx e tx e ISR de tx e rx
 	sei();
 	UCSR0C = (1<<UCSZ01) | (1<<UCSZ00); //Async, 0 parity, 1 stop bit, 8 bits, rising edge clock
 }
@@ -45,7 +45,7 @@ void escreveVetor(char dados[], int n){
 	for(int i=0; i<n; i++){
 		escreve(dados[i]);
 	}
-	UDR0 = '\0';
+	//UDR0 = '\0';
 }
 char novoDado(){
 	char tam = serialRXPosW-serialRXPosR;
@@ -62,7 +62,15 @@ char le(){
 		if(serialRXPosR >= RX_BUFFER_SIZE)
 			serialRXPosR = 0;
 	}else{
-		c = '\0';
+		atrasoms(1);
+		if(serialRXPosR != serialRXPosW){
+			c = serialRXBuffer[serialRXPosR];
+			serialRXPosR++;
+			if(serialRXPosR >= RX_BUFFER_SIZE)
+			serialRXPosR = 0;
+		}else{
+			c = '\0';
+		}
 	}
 	return c;
 }
@@ -71,9 +79,15 @@ void escreve(char c){
 	serialTXPosW++;
 	if(serialTXPosW >= TX_BUFFER_SIZE)
 		serialTXPosW = 0;
+		
+	//UDR0 = '\0';
+	if( UCSR0A & (1<<UDRE0) ){
+		UCSR0A &= ~(1<<UDRE0);
+		UCSR0A |= (1<<UDRE0);
+	}
 }
 
-ISR(USART0_TX_vect){
+ISR(USART0_UDRE_vect){
 	if(serialTXPosR != serialTXPosW){
 		UDR0 = serialTXBuffer[serialTXPosR];
 		serialTXPosR++;

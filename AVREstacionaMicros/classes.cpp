@@ -20,6 +20,19 @@ void DataHora::setByVector(char datahoravetor[4]){
 	this->hora  = datahoravetor[2];
 	this->min = datahoravetor[3];
 }
+void DataHora::setByDataHoraZeroSeconds(DataHora min){
+	this->dia = min.dia;
+	this->mes = min.mes;
+	this->hora = min.hora;
+	this->min = min.min;
+}
+void DataHora::setByDataHora(DataHora a){
+	this->dia = a.dia;
+	this->mes = a.mes;
+	this->hora = a.hora;
+	this->min = a.min;
+	this->seg = a.seg;
+}
 DataHora DataHora::somaMin(int minutos){
 	DataHora retorno(this->dia, this->mes, this->hora, this->min);
 	retorno.hora += minutos/60;
@@ -84,27 +97,40 @@ Veiculo::Veiculo(char _placa[7], DataHora _dataEntrada){
 	}
 	this->placa[7] = '\0';
 	this->dataEntrada = _dataEntrada;
-	this->dataPagamento = _dataEntrada;
-	calculaSaidaPaga();
-}
-	
-void Veiculo::pagou(DataHora _dataPagamento){
-	dataPagamento = _dataPagamento;
-	calculaSaidaPaga();
 }
 
-void Veiculo::calculaSaidaPaga(){
-	unsigned long int minutosPagamento = dataEntrada.diffMin(dataPagamento);
-	if(minutosPagamento<=45){
-		dataSaidaPaga = dataEntrada.somaMin(60);
-		}else if(minutosPagamento%30){
-		dataSaidaPaga = dataEntrada.somaMin(minutosPagamento-minutosPagamento%60+30);
-		}else{
-		dataSaidaPaga = dataEntrada.somaMin(minutosPagamento);
+int Veiculo::calculaPgto(DataHora agora){
+	//se retornar 0, libera saída, caso contrário cobra pagamento
+	int minutos = dataEntrada.diffMin(agora);
+	int tmp;
+	int pagar=0;
+
+	if(minutos<=15){		
+		pagar = 0;
+	}else if(minutos<=60){
+		pagar = 10-this->valorpago;
+	}else{
+		//if(minutos%30){//se n divide por 30
+		//	tmp = (minutos/30+1)*30; //arredonda para cima
+		//	pagar = 10+((tmp-60)/30)*4-this->valorpago;
+		//}else{
+			pagar = 10+((minutos-60)/30+1)*4-this->valorpago; //0 a 29 e 30 a 59...
+		//}
 	}
-	if(dataSaidaPaga.diffMin(dataPagamento)<15){
-		dataSaidaPaga = dataPagamento.somaMin(15);
+	
+	if(this->estEspecial & this->estEspecialAntes){
+		pagar += (minutos/30+1)*2;
 	}
+	
+	if(this->dataPagamento.diffMin(agora)<=15)
+		pagar = 0;
+}
+
+int Veiculo::pagar(int valor, DataHora agora){
+	if(valor > 0)
+		this->dataPagamento = agora;
+	this->valorpago += valor;
+	return this->valorpago;
 }
 
 char Veiculo::ehEspecial(){
@@ -118,7 +144,8 @@ char Veiculo::ehEspecial(){
 	return 1;
 }
 
-char Veiculo::ehPlacaIgual(char compara[]){ //retorna 1 se placa for igual ao parâmetro compara
+char Veiculo::ehPlacaIgual(char compara[]){ 
+	//retorna 1 se placa for igual ao parâmetro compara
 	for(int i=0; i<8; i++){
 		if(compara[i] != this->placa[i])
 			return 0;
