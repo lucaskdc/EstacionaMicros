@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+AVREstacionaMicros/Debug/AVREstacionaMicros.elf
+AVREstacionaMicros/.vs/AVREstacionaMicros/v14/.atsuo
+AVREstacionaMicros/.vs/AVREstacionaMicros/v14/.atsuo
+AVREstacionaMicros/Debug/AVREstacionaMicros.elf
+AVREstacionaMicros/Debug/AVREstacionaMicros.lss
+AVREstacionaMicros/Debug/AVREstacionaMicros.srec
+AVREstacionaMicros/Debug/Makefile
