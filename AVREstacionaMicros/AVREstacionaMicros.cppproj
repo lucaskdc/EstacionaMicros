@@ -180,6 +180,12 @@
     <Compile Include="classes.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="lcd.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lcd.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="serial.h">
       <SubType>compile</SubType>
     </Compile>
@@ -187,6 +193,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="serial.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="teclado.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="teclado.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
