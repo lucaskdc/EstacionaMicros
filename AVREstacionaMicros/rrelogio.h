@@ -10,6 +10,7 @@
 #ifndef RRELOGIO_H_
 #define RRELOGIO_H_
 
+extern DataHora relogio;
 void timer1_config();
 
 #endif /* RRELOGIO */

@@ -7,13 +7,15 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "classes.h"
 
+DataHora relogio;
 ISR(TIMER1_OVF_vect){
 	TCNT1 = 3036; //1s até estourar
 	// 65536 - 16M/256 = 3036
+	relogio.incSeg();
 }
 
-DataHora relogio;
 
 void timer1_config(){//chamar essa função antes do loop da main
 	TIMSK1 = (1<<0); // habilita interrupção no timer 1
