@@ -87,3 +87,13 @@ void lcdWrite(char string1[16]){ //máximo 16 caracteres, tamanho da linha do dis
 	} while(string1[tamanho] != '\0'); 
 	for(i = 0; i< tamanho; i++) lcdWritechar(string1[i]); //print
 }
+
+void lcdWritePos(char string1[16],char coluna , char linha){
+	setCursor(coluna, linha);
+	lcdWrite(string1);
+}
+
+void lcdWritecharPos(char c, char coluna, char linha){
+	setCursor(coluna, linha);
+	lcdWritechar(c);
+}

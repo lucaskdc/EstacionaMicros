@@ -15,5 +15,7 @@ void clear_display();
 void lcd_config();
 void setCursor(unsigned int coluna, unsigned int linha);
 void lcdWrite(char string1[16]);
+void lcdWritePos(char string1[16], char coluna, char linha);
+void lcdWritecharPos(char c, char coluna, char linha);
 
 #endif /* LCD_H_ */
