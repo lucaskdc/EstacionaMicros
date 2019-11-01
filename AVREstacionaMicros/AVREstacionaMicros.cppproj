@@ -180,10 +180,16 @@
     <Compile Include="classes.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="lcd.c">
+    <Compile Include="lcd.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="lcd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rrelogio.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rrelogio.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="serial.h">
