@@ -42,12 +42,20 @@ DataHora DataHora::somaMin(int minutos){
 	}
 	return retorno;
 }
-unsigned long int DataHora::diffMin(DataHora comp){
-	unsigned long int minutosTotal = (comp.dia - this->dia)*60*24; //Dias
+long long int DataHora::diffMin(DataHora comp){
+	long long int minutosTotal = (comp.dia - this->dia)*60*24; //Dias
 	minutosTotal += (comp.mes - this->mes)*24*60*30; //Meses de 30 dias
 	minutosTotal += (comp.hora - this->hora)*60; //Horas
 	minutosTotal += (comp.min - this->min); //Minutos
 	return minutosTotal;
+}
+long long int DataHora::diffSec(DataHora comp){
+	long long int segundos = (comp.dia - this->dia)*60*24*60; //Dias
+	segundos += (comp.mes - this->mes)*24*60*30*60; //Meses de 30 dias
+	segundos += (comp.hora - this->hora)*60*60; //Horas
+	segundos += (comp.min - this->min)*60; //Minutos
+	segundos += (comp.seg - this->seg);
+	return segundos;
 }
 
 void DataHora::incSeg(char segundos){

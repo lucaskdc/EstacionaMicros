@@ -23,8 +23,9 @@ class DataHora{
 	DataHora(char _dia=1, char _mes=1, char _hora=0, char _min=0);
 	void setByVector(char datahoravetor[4]); //entra vetor recebido da Serial SH_dia_mes_hora_min
 	DataHora somaMin(int minutos); //retorna data somada com minutos (não muda a data chamada)
-	DataHora incSeg(char segundos=1);
-	unsigned long int diffMin(DataHora comp); //calcula diferença em minutos
+	void incSeg(char segundos=1);
+	long long int diffMin(DataHora comp); //calcula diferença em minutos comp - this
+	long long int diffSec(DataHora comp); //calcula diferença em minutos comp - this
 };
 
 class Veiculo {
