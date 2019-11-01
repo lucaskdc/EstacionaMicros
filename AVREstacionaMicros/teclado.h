@@ -9,8 +9,8 @@
 #ifndef TECLADO_H_
 #define TECLADO_H_
 
-	#include <avr/io.h>
-	#include <avr/io.h>
+	#include <avr/io.h>,
+
 	#include <avr/interrupt.h>
 
 	#include "atraso.h"
@@ -27,7 +27,7 @@
 	#define LINHA3_MASK (1<<PH6) // digital pin 9
 	#define LINHA_PIN  PINH      // valor de entrada
 	#define LINHA_PORT PORTH    // valor de saida ou setar pull up
-	#define LINHA_DDR  DDRH		//definir se é entrada ou saida
+	#define LINHA_DDR	DDRH		//definir se é entrada ou saida
 	
 	char le_linha();
 	void solta_tecla(char valor_anterior);

@@ -5,22 +5,29 @@
  *  Author: Jose Miola
  */ 
 #include "teclado.h"
-
+#include "lcd.h"
 
 char le_linha(){ // retorna linha precionada, -1 se todas desativadas
+	
+	
 	char valor_atual=-1;
 	if(!(LINHA0_MASK & LINHA_PIN)) //verifica valor atual (0->BOTAO ATIVO)
-	valor_atual=0;
+		valor_atual=0;
 	
 	if(!(LINHA1_MASK & LINHA_PIN))
-	valor_atual=1;
+		valor_atual=1;
 	
 	if(!(LINHA2_MASK & LINHA_PIN))
 	valor_atual=2;
 	
 	if(!(LINHA3_MASK & LINHA_PIN))
 	valor_atual=3;
+	
 	return valor_atual;
+	
+	
+	
+	
 }
 void solta_tecla(char valor_anterior){
 	char contador_2=0;
@@ -28,40 +35,35 @@ void solta_tecla(char valor_anterior){
 	char flag=1;
 	while(flag){
 		if(le_linha()!=valor_anterior)
-		contador++;
+			contador++;
 		else
-		contador=0;
-		
-		if(contador>=10 | contador>= 100)
+			contador=0;	
+		if((contador>=(char)10)|(contador_2>=(char)100))
 			flag=0;
 		
 		contador_2++;
-		atrasoms(10);	
-	}	
+		atrasoms(10);
+	}
 }
 char debounce_linha(void){ //retorna linha pós debounce
 	char contador=0;
 	char valor_atual;
 	char valor_anterior;
 	
-	
-	
 	valor_anterior=le_linha();
-	
-	
-	if(valor_anterior!=-1){
+
+	if(valor_anterior!=(char)-1){
 		do{
 			valor_atual=le_linha();
+			if(valor_atual!=valor_anterior)
+				return -1;
 			
 			if(valor_atual==valor_anterior)
-			contador++;
+				contador++;								
 			
-			else
-			return -1;
-			
-			if(contador>=10){
-				solta_tecla(valor_atual); // fica preso na funçao até trocar de tecla ou solta-la
+			if(contador>=(char)10){
 				
+				solta_tecla(valor_atual); // fica preso na funçao até trocar de tecla ou solta-la				
 				return valor_atual;
 			}
 			atrasoms(10);
@@ -89,11 +91,11 @@ char converte_leitura(char linha, char coluna){
 			leitura='2';
 			break;
 			
-			case 3:
+			case 2:
 			leitura='3';
 			
 			break;
-			case 4:
+			case 3:
 			leitura='A';
 			break;
 		}
@@ -167,14 +169,13 @@ char le_teclado(){
 	COLUNA_DDR |=((COLUNA0_MASK)|(COLUNA1_MASK)|(COLUNA2_MASK)|(COLUNA3_MASK));//coluas como saida
 	
 	
-	for(i = 0; i <= 10; i++)
-	{
+
 		coluna=0;
 		COlUNA_PORT &=~ COLUNA0_MASK;
 		COlUNA_PORT |= (COLUNA1_MASK|COLUNA2_MASK|COLUNA3_MASK);
 		linha=debounce_linha();
 		
-		if(linha!=-1){
+		if(linha!=(char)-1){
 			leitura = converte_leitura(linha,coluna);
 			return leitura;
 		}
@@ -183,7 +184,7 @@ char le_teclado(){
 		COlUNA_PORT |= (COLUNA0_MASK|COLUNA2_MASK|COLUNA3_MASK);
 		linha=debounce_linha();
 		
-		if(linha!=-1){
+		if(linha!=(char)-1){
 			leitura=converte_leitura(linha,coluna);
 			return leitura;
 		}
@@ -192,7 +193,7 @@ char le_teclado(){
 		COlUNA_PORT |= (COLUNA1_MASK|COLUNA0_MASK|COLUNA3_MASK);
 		linha=debounce_linha();
 		
-		if(linha!=-1){
+		if(linha!=(char)-1){
 			leitura = converte_leitura(linha,coluna);
 			return leitura;
 		}
@@ -201,20 +202,10 @@ char le_teclado(){
 		COlUNA_PORT |= (COLUNA1_MASK|COLUNA2_MASK|COLUNA0_MASK);
 		linha = debounce_linha();
 		
-		if(linha!=-1){
+		if(linha!=(char)-1){
 			leitura = converte_leitura(linha,coluna);
 			return leitura;
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-	}
-
 	return -1;
 }
   
