@@ -370,12 +370,8 @@ int main(void)
 				}
 				novoBotao = le_teclado();
 				if(novoBotao == (char)-1){
-					if(novoDado()){
-						if(le() == 'T')
-						novoBotao = le();
-					}
-				}
-				if(novoBotao == '*'){
+					
+				}else if(novoBotao == '*'){
 					numeroCartao[numeroCartaoPos]='\0';
 					lcdWritecharPos(' ',numeroCartaoPos,1);
 					numeroCartaoPos--;
@@ -411,6 +407,7 @@ int main(void)
 					if(!strcmp(cartaoResposta, "Cartao Invalido")){
 						estado = ESTADOINICIAL;
 					}else{
+						numeroSenhaPos = 0;
 						estado = SENHA;
 						telaNova = 1;
 					}
@@ -432,10 +429,8 @@ int main(void)
 					if(numeroSenhaPos==6){
 						numeroSenha[6]='\0';
 						valor[2] = '\0';
-						if(valorPos == 1){
-							valor[1] = valor[0];
-							valor[0] = '0';
-						}
+						valor[1] = carros[carroSaida].calculaPgto(relogio)%100/10 + 0x30;
+						valor[0] = carros[carroSaida].calculaPgto(relogio)%10 + 0x30;
 						escreveVetor("EP", 2);
 						escreve(10);
 						escreveVetor(numeroSenha,7);
