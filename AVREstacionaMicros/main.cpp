@@ -16,12 +16,16 @@
 #include "teclado.h"
 #include "rrelogio.h"
 
-#define ESTADOINICIAL 0
-#define NUMEROCARTAO 1
-#define SENHA 2
-#define AGUARDACARTAO 3
-#define AGUARDASENHA 4
-#define BLOQUEADO 5
+enum{
+	ESTADOINICIAL,
+	NUMEROCARTAO,
+	SENHA,
+	AGUARDACARTAO,
+	AGUARDASENHA,
+	BLOQUEADO,
+	SAIUENTRADA,
+	SAIUSAIDA
+};
 
 void bloqueia();
 void desbloqueia();
@@ -100,6 +104,8 @@ int main(void)
 	char indice=0; //indice letreiro preços
 	char letreiro[44] = "R$10 primeira hora, R$4 meia hora adicional";
 	
+	DataHora tempoTMP;
+	
 	DDRB = 1<<7;
 	
 	serialSetup();
@@ -128,6 +134,7 @@ int main(void)
 					case 'H': //Recebe DataHora
 						leVetor(vetor, 4);
 						relogio.setByVector(vetor);
+						escreveVetor("EH",2);
 						break; //H
 					case 'N': //Novo Carro
 						byteLido=le(); //1 entrada, 2 saída
@@ -157,6 +164,7 @@ int main(void)
 										clear_display();
 										lcdWrite("Realize o Pagamento");
 										estado = NUMEROCARTAO;
+										telaNova = 1;
 									}else{
 										cancelaAbre(byteLido);
 										horaCarroSaida.setByDataHora(relogio);
@@ -173,12 +181,14 @@ int main(void)
 						leVetor(vetor,8);
 						escreveVetor("ES", 2);
 						posCarro = procuraPlaca(vetor);
+						atrasoms(2000);
 						cancelaFecha(byteLido);
-						recontar = 1;
+						recontar = 7;
 						switch(byteLido){
 							case '1':
 								cont0antes = contAndar[0];
 								pedeMapa('0');
+								atrasoms(100);
 								countMapa(mapa, contAndar,'0');
 								if((contAndar[0] != cont0antes) & !carros[posCarro].ehEspecial()){
 									carros[posCarro].estEspecial=1;
@@ -187,12 +197,14 @@ int main(void)
 								}
 								carroEntrada = -1;
 								carros[posCarro].estado = DENTRO;
+								estado = SAIUENTRADA;
 								break;
 							case '2':
 								if(carros[posCarro].estEspecial)
 									carros[posCarro].estEspecialAntes=1;
 								carroSaida = -1;
 								carros[posCarro].estado = FORA;
+								estado = SAIUSAIDA;
 								break;
 						}
 						break; //S
@@ -212,14 +224,17 @@ int main(void)
 							case '0':
 								leVetor(mapa[0],5);
 								countMapa(mapa, contAndar, '0');
+								recontar &= ~(1);
 								break;
 							case '1':
 								leVetor(mapa[1],5);
 								countMapa(mapa, contAndar, '1');
+								recontar &= ~(1<<1);
 								break;	
 							case '2':
 								leVetor(mapa[2],5);
 								countMapa(mapa, contAndar, '2');
+								recontar &= ~(1<<2);
 								break;
 						}
 						break;
@@ -257,15 +272,10 @@ int main(void)
 		
 		switch(estado){
 			case ESTADOINICIAL:
-				if(recontar){
-					pedeMapa('0');
-					pedeMapa('1');
-					pedeMapa('2');
-					atrasoms(500); //gambiarra
-					countMapa(mapa, contAndar, '1');
-					countMapa(mapa, contAndar, '2');
-					countMapa(mapa, contAndar, '3');
-				}
+				if(recontar & (1<<0)) pedeMapa('0');
+				if(recontar & (1<<1)) pedeMapa('1');
+				if(recontar & (1<<2)) pedeMapa('2');
+				
 				if(ultMostraVagas.diffSec(relogio)>15){
 					ultMostraVagas = relogio;
 					clear_display();
@@ -352,15 +362,22 @@ int main(void)
 					
 					lcdWritePos("CARTAO",0,1);
 					telaNova = 0;
+					
 					for(int i=0; i<numeroCartaoPos; i++){
 						setCursor(0,1);
 						lcdWritechar(numeroCartao[i]);
 					}
 				}
 				novoBotao = le_teclado();
+				if(novoBotao == (char)-1){
+					if(novoDado()){
+						if(le() == 'T')
+						novoBotao = le();
+					}
+				}
 				if(novoBotao == '*'){
 					numeroCartao[numeroCartaoPos]='\0';
-					lcdWritecharPos(novoBotao,numeroCartaoPos,1);
+					lcdWritecharPos(' ',numeroCartaoPos,1);
 					numeroCartaoPos--;
 				}else if(novoBotao == '#'){
 					if(numeroCartaoPos==6){
@@ -404,9 +421,14 @@ int main(void)
 					clear_display();
 					lcdWritePos(cartaoResposta, 0,0);
 					lcdWritePos("Senha:",0,1);
+					telaNova  = 0;
 				}
 				novoBotao = le_teclado();
-				if(novoBotao == '#'){
+				if(novoBotao == (char)-1){
+
+				}else if(novoBotao == '#'){
+										itoa(numeroSenhaPos, horastr, 10);
+										lcdWritePos(horastr,0,1);
 					if(numeroSenhaPos==6){
 						numeroSenha[6]='\0';
 						valor[2] = '\0';
@@ -418,18 +440,16 @@ int main(void)
 						escreve(10);
 						escreveVetor(numeroSenha,7);
 						escreveVetor(valor, 3);
+						estado=AGUARDASENHA;
 					}
-				}else if(novoBotao == '*' & valorPos == 0){
+				}else if(novoBotao == '*' && valorPos == 0){
 					numeroSenha[numeroSenhaPos]='\0';
-					lcdWritecharPos(novoBotao,numeroSenhaPos+6,1);
+					lcdWritecharPos(' ',numeroSenhaPos+6,1);
 					numeroSenhaPos--;
-				}else if(novoBotao != '#' & numeroSenhaPos==6){
-					numeroSenha[6]='\0';
-					estado = SENHA;
-				}else if(novoBotao != (char)-1 & numeroSenhaPos < 6){
-					numeroCartao[numeroCartaoPos]=novoBotao;
-					lcdWritecharPos('*',numeroCartaoPos+6,1); //2a linha
-					numeroCartaoPos++;
+				}else if(novoBotao != (char)-1 && numeroSenhaPos < 6){
+					numeroSenha[numeroSenhaPos]=novoBotao;
+					lcdWritecharPos('*',numeroSenhaPos+6,1); //2a linha
+					numeroSenhaPos++;
 				}
 				break;
 			case AGUARDASENHA:
@@ -445,9 +465,9 @@ int main(void)
 					atrasoms(1000);
 					telaNova = 1;
 					senhaRespostaNova=0;
-					if(!strcmp(cartaoResposta, "Cartao Invalido")){
+					if(!strcmp(cartaoResposta, "Cartao Invalido")){ //se cartão é inválido, vai ESTADO INICIAL
 						estado = ESTADOINICIAL;
-						}else{
+					}else{
 						estado = SENHA;
 						telaNova = 1;
 					}
@@ -458,7 +478,23 @@ int main(void)
 					clear_display();
 					lcdWritePos("Desligado", 4, 1);
 				}
-		}
+			case SAIUENTRADA:
+				tempoTMP.setByDataHora(relogio);
+				if(tempoTMP.diffSec(relogio)>=5){
+					cancelaFecha('1');
+					estado = ESTADOINICIAL;
+				}					
+				break;
+			
+			case SAIUSAIDA:
+				tempoTMP.setByDataHora(relogio);
+				if(tempoTMP.diffSec(relogio)>=5){
+					cancelaFecha('2');
+					estado = ESTADOINICIAL;
+				}
+				break;
+			
+		}//switch(estado)
 		
 		if(ultEO.diffSec(relogio)>40){
 			escreveVetor("EO", 2);
