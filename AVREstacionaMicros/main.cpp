@@ -95,7 +95,7 @@ int main(void)
 	char contAndar[3]={0,0,0};
 	char cont0antes = 0;
 	
-	char recontar = 0;
+	char recontar = 7;
 	
 	DataHora ultMostraVagas;
 	DataHora ultEO;
@@ -205,7 +205,7 @@ int main(void)
 						posCarro = procuraPlaca(vetor);
 						atrasoms(2000);
 						cancelaFecha(byteLido);
-						recontar = 7;
+						recontar = 7; //0111, os 3 andares
 						switch(byteLido){
 							case '1':
 								cont0antes = contAndar[0];
@@ -281,10 +281,7 @@ int main(void)
 		
 		
 		if(carroEntrada != -1){
-				lcdWritePos("ot",0,0);
-			if(horaCarroSaida.diffSec(relogio) > 10){
-				//if(horaCarroSaida.diffSec(relogio)%2){
-
+			if(horaCarroSaida.diffSec(relogio) > (int)40){
 				if(relogio.seg%2){
 					PORTB |= 1<<7;
 				} else {
@@ -324,7 +321,7 @@ int main(void)
 				if(recontar & (1<<2)) pedeMapa('2');
 				
 				if(ultMostraVagas.diffSec(relogio)>15){
-					ultMostraVagas = relogio;
+					ultMostraVagas.setByDataHora(relogio);
 					clear_display();
 					lcdWritePos("Vagas Terreo:",0,0);
 					tmp = 36-contAndar[0];					
@@ -351,7 +348,7 @@ int main(void)
 					clear_display();
 					lcdWritePos("EstacionaMicros",0,0);					
 					indice=0;
-					telaNova=0;			
+					telaNova=0;
 				}
 				char horastr[3];
 				if(horaLetreiro.diffSec(relogio) >= 1 /*|| 1*/){
