@@ -54,21 +54,11 @@ void lcdWritechar(char data_display){
 	porta_lcd(data_display);
 }
 
-void clear_display(){
+
+/*void clear_display(){
 	lcd_comando(0x01);
 	atrasous(1650);
-}
-
-void lcd_config(){
-		DDRA = 0xFF;   //dados
-		DDRC |= (1<<6);//E
-		DDRC |= (1<<7);//RS
-	//atrasoms(15);      //esperar HD44780 zerar a busy flag 
-	lcd_comando(0x38); //function set
-	lcd_comando(0x0E); //display control
-	lcd_comando(0x06); //entry mode set
-	clear_display();
-}
+}*/
 
 void setCursor(unsigned int coluna, unsigned int linha){
 	lcd_comando(0x80); //coloca o cursor na linha 0
@@ -84,7 +74,7 @@ void lcdWrite(char string1[16]){ //máximo 16 caracteres, tamanho da linha do dis
 	unsigned int tamanho = 0, i;
 	do{ //mede o tamanho da string
 		tamanho++;
-	} while(string1[tamanho] != '\0'); 
+	} while(string1[tamanho] != '\0');
 	for(i = 0; i< tamanho; i++) lcdWritechar(string1[i]); //print
 }
 
@@ -97,3 +87,25 @@ void lcdWritecharPos(char c, char coluna, char linha){
 	setCursor(coluna, linha);
 	lcdWritechar(c);
 }
+
+void clear_display(){
+	lcdWritePos("                ", 0 , 0);
+	lcdWritePos("                ", 0 , 1);
+	setCursor(0,0);
+}
+
+void lcd_config(){
+		DDRA = 0xFF;   //dados
+		DDRC |= (1<<6);//E
+		DDRC |= (1<<7);//RS
+	//atrasoms(15);      //esperar HD44780 zerar a busy flag 
+	lcd_comando(0x38); //function set
+	lcd_comando(0x0E); //display control
+	lcd_comando(0x06); //entry mode set
+	clear_display();
+}
+
+
+
+
+

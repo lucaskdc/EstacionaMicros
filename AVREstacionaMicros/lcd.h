@@ -18,4 +18,5 @@ void lcdWrite(char string1[16]);
 void lcdWritePos(char string1[16], char coluna, char linha);
 void lcdWritecharPos(char c, char coluna, char linha);
 
+
 #endif /* LCD_H_ */

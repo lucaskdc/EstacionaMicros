@@ -115,7 +115,7 @@ int main(void)
 	DDRF |= 1<<1; // LED AMARELO
 	DDRF |= 1<<2; // LED VERMELHO
 
-    PORTF |= (0b00000111);
+    PORTF &= ~(0b00000111);
 
 	serialSetup();
 	lcd_config();
@@ -308,12 +308,12 @@ int main(void)
 		if(carroSaida != -1){
 			if(horaCarroSaida.diffSec(relogio) > (int)40){
 				if(relogio.seg%2){
-					PORTB |= 1<<7;
-				} else {
-					PORTB &= ~(1<<7);
+					PORTF |= 1<<1; // LED AMARELO ACENDE (CANCELA DE SAÍDA)
+					} else {
+					PORTF &= ~(1<<1); // LED AMARELO APAGA (CANCELA DE SAÍDA)
 				}
-			}else{
-				PORTB &= ~(1<<7);
+				}else{
+				PORTF &= ~(1<<1); // LED AMARELO APAGA (CANCELA DE SAÍDA)
 			}
 			if(horaCarroSaida.diffSec(relogio) > (int)60){
 				cancelaFecha('2');
@@ -328,10 +328,7 @@ int main(void)
 				if(recontar & (1<<1)) pedeMapa('1');
 				if(recontar & (1<<2)) pedeMapa('2');
 				
-				if(ultMostraVagas.diffSec(relogio)>15){
-					ultMostraVagas.setByDataHora(relogio);
-					estado = VAGAS;
-				}
+
 				if(telaNova){
 					clear_display();
 					lcdWritePos("EstacionaMicros",0,0);					
@@ -376,21 +373,28 @@ int main(void)
 //					lcdWritecharPos(horaLetreiro.seg/10+0x30, 3,1);
 //					lcdWritecharPos(horaLetreiro.seg%10+0x30, 4,1);
 				}
+				if(ultMostraVagas.diffSec(relogio)>15){
+					ultMostraVagas.setByDataHora(relogio);
+					estado = VAGAS;
+					telaNova = 1;
+				}
 				break;
 			case VAGAS:
-					
+					if(telaNova){
+						clear_display();
+						lcdWritePos("                ", 0, 1);
+						telaNova = 0;
+					}
 					switch(ultMostraVagas.diffSec(relogio)){
 						case 0:
 						case 1:
-							clear_display();
-							lcdWritePos("Vagas Terreo:",0,0);
+							lcdWritePos("Vagas Terreo: ",0,0);
 							tmp = 36-contAndar[0];
 							lcdWritechar(tmp/10+0x30);
 							lcdWritechar(tmp%10+0x30);
 							//atrasoms(1000);
 							break;
 						case 2:				
-							clear_display();
 							lcdWritePos("Vagas 1 andar:",0,0);
 							tmp = 36-contAndar[1];
 							lcdWritechar(tmp/10+0x30);
@@ -398,7 +402,7 @@ int main(void)
 							//atrasoms(1000);
 							break;
 						case 3:			
-							clear_display();
+
 							lcdWritePos("Vagas 2 andar:",0,0);
 							tmp = 36-contAndar[2];
 							lcdWritechar(tmp/10+0x30);
@@ -407,17 +411,20 @@ int main(void)
 							break;
 						default:
 							estado = ESTADOINICIAL;
+							telaNova = 1;
 					}
 				break;
 			case NUMEROCARTAO:
 				if(telaNova){
 					if(carros[carroSaida].estEspecial){
-						clear_display();
-						lcdWritePos("Vaga Ilegal",0,0);
-						lcdWritePos("Multa se reincid",0,1);
-						if (carros[carroSaida].estEspecialAntes)
+						if (carros[carroSaida].estEspecialAntes) //se um não-especial estacionou ilegalmente na vaga IDE
 						{
 							lcdWrite("Reincidente");
+							atrasoms(2000);
+						}else{
+							clear_display();
+							lcdWritePos("Vaga Ilegal",0,0);
+							lcdWritePos("prox = MULTA",0,1);
 						}
 					}
 					clear_display();
