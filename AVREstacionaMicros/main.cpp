@@ -280,7 +280,27 @@ int main(void)
 		}
 		
 		
-		if(carroEntrada != -1){
+		if(carroEntrada != (int)-1){
+			if(horaCarroSaida.diffSec(relogio) > (int)10){
+				
+				if(relogio.seg%2){
+					lcdWritecharPos('$',15,1);
+					PORTB |= 1<<7;
+				} else {
+					lcdWritecharPos('%',15,1);
+					PORTB &= ~(1<<7);
+				}
+			}else{
+				PORTB &= ~(1<<7);
+			}
+			if(horaCarroEntrada.diffSec(relogio) > (int)20){
+				cancelaFecha('1');
+				carros[carroEntrada].estado = FORA;
+				carroEntrada = -1;
+
+			}
+		}
+		if(carroSaida != -1){
 			if(horaCarroSaida.diffSec(relogio) > (int)40){
 				if(relogio.seg%2){
 					PORTB |= 1<<7;
@@ -290,26 +310,10 @@ int main(void)
 			}else{
 				PORTB &= ~(1<<7);
 			}
-			if(horaCarroEntrada.diffSec(relogio) > 60){
-				cancelaFecha('1');
-				carroEntrada = -1;
-				carros[carroEntrada].estado = FORA;
-			}
-		}
-		if(carroSaida != -1){
-			if(horaCarroSaida.diffSec(relogio) > 40){
-				if(relogio.seg%2){
-					PORTB |= 1<<7;
-				} else {
-					PORTB &= ~(1<<7);
-				}
-			}else{
-				PORTB &= ~(1<<7);
-			}
-			if(horaCarroSaida.diffSec(relogio) > 60){
+			if(horaCarroSaida.diffSec(relogio) > (int)60){
 				cancelaFecha('2');
-				carroSaida = -1;
 				carros[carroSaida].estado = DENTRO;
+				carroSaida = -1;
 			}
 		}
 		
