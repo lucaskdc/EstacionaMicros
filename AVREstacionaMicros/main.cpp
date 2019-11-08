@@ -328,6 +328,7 @@ int main(void)
 				if(recontar & (1<<2)) pedeMapa('2');
 				
 				if(ultMostraVagas.diffSec(relogio)>15){
+					ultMostraVagas.setByDataHora(relogio);
 					estado = VAGAS;
 				}
 				if(telaNova){
@@ -376,7 +377,6 @@ int main(void)
 				}
 				break;
 			case VAGAS:
-					ultMostraVagas.setByDataHora(relogio);
 					
 					switch(ultMostraVagas.diffSec(relogio)){
 						case 0:
