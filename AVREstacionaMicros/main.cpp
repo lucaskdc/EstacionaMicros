@@ -48,7 +48,7 @@ Veiculo carros[120]; //máximo 120 carros no estacionamento
 
 
 int main(void)
-{
+{   // saindo da entrada = entrando no estacionamento
     /* Replace with your application code */
 	char byteLido;
 	char vetor[64];	
