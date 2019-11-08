@@ -6,7 +6,13 @@ atraso.cpp
 
 classes.cpp
 
+lcd.cpp
+
+rrelogio.cpp
+
 main.cpp
 
 serial.cpp
+
+teclado.cpp
 

@@ -532,19 +532,24 @@ int main(void)
 					lcdWritePos("Desligado", 4, 1);
 				}
 			case SAIUENTRADA:
+				estado = ESTADOINICIAL;
+				/*
 				tempoTMP.setByDataHora(relogio);
 				if(tempoTMP.diffSec(relogio)>=5){
 					cancelaFecha('1');
 					estado = ESTADOINICIAL;
-				}					
+				}		*/ 			
 				break;
 			
 			case SAIUSAIDA:
+			
+				estado = ESTADOINICIAL; 
+				/*
 				tempoTMP.setByDataHora(relogio);
 				if(tempoTMP.diffSec(relogio)>=5){
 					cancelaFecha('2');
 					estado = ESTADOINICIAL;
-				}
+				}*/
 				break;
 			
 		}//switch(estado)
@@ -642,7 +647,7 @@ char countMapa(char mapa[3][5], char contAndar[3], char c){
 	if(andar != (char)-1){
 		for(int i=0; i<5; i++){
 			for(int j=0; j<8; j++){
-				if(mapa[0][i] & (1<<j)){
+				if(mapa[andar][i] & (1<<j)){
 					cont++;
 				}
 			}
