@@ -27,7 +27,7 @@ class DataHora{
 	DataHora somaMin(int minutos); //retorna data somada com minutos (não muda a data chamada)
 	void incSeg(char segundos=1);
 	int diffMin(DataHora comp); //calcula diferença em minutos comp - this
-	int diffSec(DataHora comp); //calcula diferença em minutos comp - this
+	unsigned int diffSec(DataHora comp); //calcula diferença em minutos comp - this
 };
 
 class Veiculo {

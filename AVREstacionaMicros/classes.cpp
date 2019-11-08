@@ -71,10 +71,11 @@ int DataHora::diffMin(DataHora comp){
 	#endif
 	return minutosTotal;
 }
-int DataHora::diffSec(DataHora comp){
-	int segundos = (comp.dia - this->dia)*60*24*60; //Dias
-	segundos += (comp.mes - this->mes)*24*60*30*60; //Meses de 30 dias
-	segundos += (comp.hora - this->hora)*60*60; //Horas
+unsigned int DataHora::diffSec(DataHora comp){
+	//int segundos = (comp.dia - this->dia)*60*24*60; //Dias
+	//segundos += (comp.mes - this->mes)*24*60*30*60; //Meses de 30 dias
+	//segundos += (comp.hora - this->hora)*60*60; //Horas
+	unsigned int segundos = (comp.hora - this->hora)*60*60; //Horas
 	segundos += (comp.min - this->min)*60; //Minutos
 	segundos += (comp.seg - this->seg);
 	#if debugSec == 1
