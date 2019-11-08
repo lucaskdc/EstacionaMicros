@@ -1,6 +1,6 @@
 /*
  * rrelogio.c
- *
+ * gera uma interrupção a cada segundo (sem CTC)
  * Created: 31/10/2019 22:58:08
  * Author : oskar
  */ 
@@ -9,8 +9,7 @@
 #include <avr/interrupt.h>
 #include "classes.h"
 
-DataHora relogio(1,1,6,0);
-
+DataHora relogio(1,1,6,0); // dia mes hora minuto
 /*
 char tempoMostraAndares=0;
 char tempoCancela1Aberta=0;
