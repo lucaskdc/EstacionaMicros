@@ -1,6 +1,6 @@
 /*
  * rrelogio.c
- *
+ * outro comentario
  * Created: 31/10/2019 22:58:08
  * Author : oskar
  */ 
