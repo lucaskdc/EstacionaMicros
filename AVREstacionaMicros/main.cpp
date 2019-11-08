@@ -243,18 +243,20 @@ int main(void)
 						break;
 					case 'M':
 						switch(le()){
-							le();
 							case '0':
+								le();
 								leVetor(mapa[0],5);
 								countMapa(mapa, contAndar, '0');
 								recontar &= ~(1);
 								break;
 							case '1':
+								le();
 								leVetor(mapa[1],5);
 								countMapa(mapa, contAndar, '1');
 								recontar &= ~(1<<1);
 								break;	
 							case '2':
+								le();
 								leVetor(mapa[2],5);
 								countMapa(mapa, contAndar, '2');
 								recontar &= ~(1<<2);
