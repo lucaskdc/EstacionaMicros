@@ -190,6 +190,14 @@ char Veiculo::ehPlacaIgual(char compara[]){
 	return 1;
 }
 
+char Veiculo::ehNumeroPlacaIgual(char num[]){
+	for(int i=3; i<7; i++){
+		if(num[i] != this->placa[i])
+			return 0;
+	}
+	return 1;
+}
+
 void Veiculo::setPlaca(char _placa[]){
 	for(int i=0; i<7; i++){
 		this->placa[i] = _placa[i];
