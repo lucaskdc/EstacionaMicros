@@ -18,6 +18,7 @@
 
 enum{
 	ESTADOINICIAL,
+	VAGAS,
 	NUMEROCARTAO,
 	SENHA,
 	AGUARDACARTAO,
@@ -35,6 +36,7 @@ int procuraPlaca(char placaProcurada[]);
 void verificaResposta(char respostaEsperada[], char n, char mensagem[]);
 void pedeMapa(char c);
 char countMapa(char mapa[3][5], char contAndar[3], char c);
+void escreveNota(Veiculo carro);
 
 char desbloqueado=0;
 char cancelaAberta=0;
@@ -112,6 +114,8 @@ int main(void)
 	DDRF |= 1<<0; // LED VERDE
 	DDRF |= 1<<1; // LED AMARELO
 	DDRF |= 1<<2; // LED VERMELHO
+
+    PORTF |= (0b00000111);
 
 	serialSetup();
 	lcd_config();
@@ -285,17 +289,15 @@ int main(void)
 		
 		
 		if(carroEntrada != (int)-1){
-			if(horaCarroSaida.diffSec(relogio) > (int)10){
+			if(horaCarroEntrada.diffSec(relogio) > (int)10){
 				
 				if(relogio.seg%2){
-					lcdWritecharPos('$',15,1);
-					PORTB |= 1<<7;
+					PORTF |= 1<<0; // LED VERDE ACENDE (CANCELA DE ENTRADA)
 				} else {
-					lcdWritecharPos('%',15,1);
-					PORTB &= ~(1<<7);
+					PORTF &= ~(1<<0); // LED VERDE APAGA (CANCELA DE ENTRADA)
 				}
 			}else{
-				PORTB &= ~(1<<7);
+				PORTF &= ~(1<<0); // LED VERDE APAGA (CANCELA DE ENTRADA)
 			}
 			if(horaCarroEntrada.diffSec(relogio) > (int)20){
 				cancelaFecha('1');
@@ -329,27 +331,7 @@ int main(void)
 				
 				if(ultMostraVagas.diffSec(relogio)>15){
 					ultMostraVagas.setByDataHora(relogio);
-					clear_display();
-					lcdWritePos("Vagas Terreo:",0,0);
-					tmp = 36-contAndar[0];					
-					lcdWritechar(tmp/10+0x30);
-					lcdWritechar(tmp%10+0x30);
-					atrasoms(1000);
-					
-					clear_display();
-					lcdWritePos("Vagas 1 andar:",0,0);
-					tmp = 36-contAndar[1];
-					lcdWritechar(tmp/10+0x30);
-					lcdWritechar(tmp%10+0x30);
-					atrasoms(1000);
-					
-					clear_display();
-					lcdWritePos("Vagas 2 andar:",0,0);
-					tmp = 36-contAndar[2];
-					lcdWritechar(tmp/10+0x30);
-					lcdWritechar(tmp%10+0x30);
-					atrasoms(1000);
-					telaNova = 1;
+					estado = VAGAS;
 				}
 				if(telaNova){
 					clear_display();
@@ -362,7 +344,7 @@ int main(void)
 					//prints horario:
 					setCursor(0,1);
 					//lcdWrite("        "); //clear local, posicao do horario
-					setCursor(0,1);
+					//setCursor(0,1);
 					if(relogio.hora <10) lcdWritechar('0');
 					itoa(relogio.hora, horastr, 10);
 					lcdWrite(horastr);
@@ -395,6 +377,38 @@ int main(void)
 //					lcdWritecharPos(horaLetreiro.seg/10+0x30, 3,1);
 //					lcdWritecharPos(horaLetreiro.seg%10+0x30, 4,1);
 				}
+				break;
+			case VAGAS:
+					
+					switch(ultMostraVagas.diffSec(relogio)){
+						case 0:
+						case 1:
+							clear_display();
+							lcdWritePos("Vagas Terreo:",0,0);
+							tmp = 36-contAndar[0];
+							lcdWritechar(tmp/10+0x30);
+							lcdWritechar(tmp%10+0x30);
+							//atrasoms(1000);
+							break;
+						case 2:				
+							clear_display();
+							lcdWritePos("Vagas 1 andar:",0,0);
+							tmp = 36-contAndar[1];
+							lcdWritechar(tmp/10+0x30);
+							lcdWritechar(tmp%10+0x30);
+							//atrasoms(1000);
+							break;
+						case 3:			
+							clear_display();
+							lcdWritePos("Vagas 2 andar:",0,0);
+							tmp = 36-contAndar[2];
+							lcdWritechar(tmp/10+0x30);
+							lcdWritechar(tmp%10+0x30);
+							//atrasoms(1000);
+							break;
+						default:
+							estado = ESTADOINICIAL;
+					}
 				break;
 			case NUMEROCARTAO:
 				if(telaNova){
@@ -526,6 +540,7 @@ int main(void)
 						cancelaAbre('2');
 						estado = ESTADOINICIAL;
 						telaNova = 1;
+						escreveNota(carros[posCarro]);
 					}else if(!strcmp(senhaResposta, "Saldo Invalido")){
 						estado = ESTADOINICIAL;
 						telaNova = 1;
@@ -671,3 +686,18 @@ char countMapa(char mapa[3][5], char contAndar[3], char c){
 	contAndar[andar] = cont;
 	return cont;
 }
+void escreveNota(Veiculo carro){
+
+char pagamento[4];
+
+escreveVetor("EI",2);
+escreve(0);
+escreve(16);
+
+
+escreveVetor(carro.placa,8);
+itoa(carro.valorpago,pagamento,10);
+escreveVetor(pagamento,4);
+escreveVetor("aaaa",4);
+};
+
