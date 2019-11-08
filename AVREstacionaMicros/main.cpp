@@ -19,6 +19,7 @@
 enum{
 	ESTADOINICIAL,
 	VAGAS,
+	DIGITAPLACA,
 	NUMEROCARTAO,
 	SENHA,
 	AGUARDACARTAO,
@@ -33,6 +34,7 @@ void desbloqueia();
 void cancelaAbre(char entradaSaida);
 void cancelaFecha(char entradaSaida);
 int procuraPlaca(char placaProcurada[]);
+int procuraPlacaNumero(char numero[]);
 void verificaResposta(char respostaEsperada[], char n, char mensagem[]);
 void pedeMapa(char c);
 char countMapa(char mapa[3][5], char contAndar[3], char c);
@@ -63,6 +65,10 @@ int main(void)
 	DataHora horaLetreiro;
 	
 	char novoBotao = 0;
+	
+	char numeroPlacaPos=0;
+	char numeroPlaca[5];
+	int carroPgto;
 	
 	char numeroCartao[7];
 	char numeroCartaoPos=0;	
@@ -380,6 +386,10 @@ int main(void)
 					estado = VAGAS;
 					telaNova = 1;
 				}
+				if(le_teclado() == 'A'){
+					estado = DIGITAPLACA;
+					telaNova = 1;
+				}
 				break;
 			case VAGAS:
 					if(telaNova){
@@ -415,10 +425,66 @@ int main(void)
 							telaNova = 1;
 					}
 				break;
+			case DIGITAPLACA:
+				if(telaNova){
+					clear_display();
+					lcdWritePos("Nº placa para",0,0);
+					lcdWritePos("Pagamento:",0,1);
+					numeroPlacaPos = 0;
+					telaNova = 0;
+				}
+				novoBotao = le_teclado();
+				if(novoBotao == (char)-1){
+					
+				}else if(novoBotao == '*'){
+					if(numeroPlacaPos>0){
+						numeroPlacaPos--;
+						numeroPlaca[numeroPlacaPos]='\0';
+						lcdWritecharPos(' ',numeroPlacaPos+10,1);
+					}else{
+						estado = ESTADOINICIAL;
+						telaNova = 1;
+					}
+				}else if(novoBotao == '#'){
+					if(numeroPlacaPos==4){
+						numeroPlaca[4] = '\0';
+						carroPgto = procuraPlacaNumero(numeroPlaca);
+						
+						if(carroPgto == -1){
+							clear_display();
+							
+							lcdWritePos("Placa estranha",0,0);
+							lcdWritePos(numeroPlaca, 0,1);
+							atrasoms(1000);
+							estado = ESTADOINICIAL;
+							telaNova = 1;
+						}else{
+							if(carros[carroPgto].calculaPgto(relogio) == 0){
+								clear_display();
+								lcdWritePos("Esta Pago!", 0, 1);
+								carroPgto = -1;
+								telaNova = 1;
+								estado = ESTADOINICIAL;
+							}else{
+								numeroPlacaPos = 0;
+								telaNova = 1;
+								estado = NUMEROCARTAO;
+							}
+						}
+						
+					}
+				}else if(novoBotao != (char)-1){
+					if(numeroPlacaPos<4){
+						numeroPlaca[numeroPlacaPos]=novoBotao;
+						lcdWritecharPos(novoBotao,numeroPlacaPos+10,1); //2a linha
+						numeroPlacaPos++;
+					}
+				}
+				break;
 			case NUMEROCARTAO:
 				if(telaNova){
-					if(carros[carroSaida].estEspecial){
-						if (carros[carroSaida].estEspecialAntes) //se um não-especial estacionou ilegalmente na vaga IDE
+					if(carros[carroPgto].estEspecial){
+						if (carros[carroPgto].estEspecialAntes) //se um não-especial estacionou ilegalmente na vaga IDE
 						{
 							lcdWrite("Reincidente");
 							atrasoms(2000);
@@ -430,9 +496,9 @@ int main(void)
 					}
 					clear_display();
 					lcdWritePos("Pague R$ ",0,0);
-					//int pgto = carros[carroSaida].calculaPgto(relogio);
+					//int pgto = carros[carroPgto].calculaPgto(relogio);
 					char pgto[5];
-					itoa(carros[carroSaida].calculaPgto(relogio), pgto, 10);
+					itoa(carros[carroPgto].calculaPgto(relogio), pgto, 10);
 					lcdWrite(pgto);
 					
 					lcdWritePos("CARTAO",0,1);
@@ -443,6 +509,7 @@ int main(void)
 						lcdWritechar(numeroCartao[i]);
 					}
 				}
+
 				novoBotao = le_teclado();
 				if(novoBotao == (char)-1){
 					
@@ -459,7 +526,6 @@ int main(void)
 						escreve(7);
 						escreveVetor(numeroCartao, 7);
 						numeroCartaoPos = 0;
-
 						telaNova = 1;
 						estado = AGUARDACARTAO;
 					}
@@ -505,7 +571,7 @@ int main(void)
 					if(numeroSenhaPos==6){
 						numeroSenha[6]='\0';
 						char strpgto[3];
-						int valorAguardaResposta = carros[carroSaida].calculaPgto(relogio);
+						int valorAguardaResposta = carros[carroPgto].calculaPgto(relogio);
 						itoa(valorAguardaResposta,strpgto,10);
 						strpgto[2] = '\0';
 						escreveVetor("EP", 2);
@@ -543,11 +609,11 @@ int main(void)
 					if(!strcmp(senhaResposta, "Cartao Invalido")){ //se cartão é inválido, vai ESTADO INICIAL
 						estado = ESTADOINICIAL;
 					}else if(!strcmp(senhaResposta, "OK")){
-						carros[carroSaida].pagar(valorAguardaResposta, relogio);
+						carros[carroPgto].pagar(valorAguardaResposta, relogio);
 						cancelaAbre('2');
 						estado = ESTADOINICIAL;
 						telaNova = 1;
-						escreveNota(carros[posCarro]);
+						escreveNota(carros[carroPgto]);
 					}else if(!strcmp(senhaResposta, "Saldo Invalido")){
 						estado = ESTADOINICIAL;
 						telaNova = 1;
@@ -662,6 +728,13 @@ int procuraPlaca(char placaProcurada[]){
 	return -1;
 }
 
+int procuraPlacaNumero(char numero[]){
+	for(int i=0; i<120; i++){
+		if(carros[i].ehNumeroPlacaIgual(numero))
+			return i;
+	}
+	return -1;
+}
 void pedeMapa(char c){
 	escreveVetor("EM",2);
 	escreve(c);
@@ -695,16 +768,16 @@ char countMapa(char mapa[3][5], char contAndar[3], char c){
 }
 void escreveNota(Veiculo carro){
 
-char pagamento[4];
+	char pagamento[4];
 
-escreveVetor("EI",2);
-escreve(0);
-escreve(16);
+	escreveVetor("EI",2);
+	escreve(0);
+	escreve(16);
 
 
-escreveVetor(carro.placa,8);
-itoa(carro.valorpago,pagamento,10);
-escreveVetor(pagamento,4);
-escreveVetor("aaaa",4);
+	escreveVetor(carro.placa,8);
+	itoa(carro.valorpago,pagamento,10);
+	escreveVetor(pagamento,4);
+	escreveVetor("aaaa",4);
 };
 

@@ -44,6 +44,7 @@ class Veiculo {
 	void pagou(DataHora _dataPagamento);
 	char ehEspecial();
 	char ehPlacaIgual(char compara[]);
+	char ehNumeroPlacaIgual(char num[]);
 	int pagar(int valor, DataHora agora);
 	int calculaPgto(DataHora agora);
 	void setPlaca(char _placa[]);
