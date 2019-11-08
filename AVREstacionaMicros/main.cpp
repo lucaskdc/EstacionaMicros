@@ -48,7 +48,7 @@ Veiculo carros[120]; //máximo 120 carros no estacionamento
 
 
 int main(void)
-{
+{   // saindo da entrada = entrando no estacionamento
     /* Replace with your application code */
 	char byteLido;
 	char vetor[64];	
@@ -243,18 +243,20 @@ int main(void)
 						break;
 					case 'M':
 						switch(le()){
-							le();
 							case '0':
+								le();
 								leVetor(mapa[0],5);
 								countMapa(mapa, contAndar, '0');
 								recontar &= ~(1);
 								break;
 							case '1':
+								le();
 								leVetor(mapa[1],5);
 								countMapa(mapa, contAndar, '1');
 								recontar &= ~(1<<1);
 								break;	
 							case '2':
+								le();
 								leVetor(mapa[2],5);
 								countMapa(mapa, contAndar, '2');
 								recontar &= ~(1<<2);
@@ -532,19 +534,24 @@ int main(void)
 					lcdWritePos("Desligado", 4, 1);
 				}
 			case SAIUENTRADA:
+				estado = ESTADOINICIAL;
+				/*
 				tempoTMP.setByDataHora(relogio);
 				if(tempoTMP.diffSec(relogio)>=5){
 					cancelaFecha('1');
 					estado = ESTADOINICIAL;
-				}					
+				}		*/ 			
 				break;
 			
 			case SAIUSAIDA:
+			
+				estado = ESTADOINICIAL; 
+				/*
 				tempoTMP.setByDataHora(relogio);
 				if(tempoTMP.diffSec(relogio)>=5){
 					cancelaFecha('2');
 					estado = ESTADOINICIAL;
-				}
+				}*/
 				break;
 			
 		}//switch(estado)
