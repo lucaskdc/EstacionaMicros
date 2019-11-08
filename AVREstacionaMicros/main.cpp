@@ -398,7 +398,7 @@ int main(void)
 						telaNova = 0;
 					}
 					switch(ultMostraVagas.diffSec(relogio)){
-						case 0:
+						/*case 0:
 						case 1:
 							lcdWritePos("Vagas Terreo: ",0,0);
 							tmp = 36-contAndar[0];
@@ -406,20 +406,38 @@ int main(void)
 							lcdWritechar(tmp%10+0x30);
 							break;
 						case 2:
-						case 3:				
-							lcdWritePos("Vagas 1 andar:",0,0);
+						case 3:		
+							lcdWritePos("Vagas 2 andar:",0,0);
 							tmp = 36-contAndar[1];
 							lcdWritechar(tmp/10+0x30);
 							lcdWritechar(tmp%10+0x30);
 							break;
-						case 4:
-						case 5:			
-							lcdWritePos("Vagas 2 andar:",0,0);
+						case 4:	
+						case 5:		
+							lcdWritePos("Vagas 3 andar:",0,0);
 							tmp = 36-contAndar[2];
 							lcdWritechar(tmp/10+0x30);
 							lcdWritechar(tmp%10+0x30);
 							break;
-						case 6:
+						case 6:	*/
+						case 0:
+							lcdWritePos("Vagas Terreo: ",0,0);
+							tmp = 36-contAndar[0];
+							lcdWritechar(tmp/10+0x30);
+							lcdWritechar(tmp%10+0x30);
+							break;
+						case 1:
+							lcdWritePos("Vagas 2 andar:",0,0);
+							tmp = 36-contAndar[1];
+							lcdWritechar(tmp/10+0x30);
+							lcdWritechar(tmp%10+0x30);
+							break;
+						case 2:
+							lcdWritePos("Vagas 3 andar:",0,0);
+							tmp = 36-contAndar[2];
+							lcdWritechar(tmp/10+0x30);
+							lcdWritechar(tmp%10+0x30);
+							break;
 						default:
 							estado = ESTADOINICIAL;
 							telaNova = 1;
