@@ -290,7 +290,7 @@ int main(void)
 			}else{
 				PORTB &= ~(1<<7);
 			}
-			if(horaCarroEntrada.diffSec(relogio) > (60){
+			if(horaCarroEntrada.diffSec(relogio) > 60){
 				cancelaFecha('1');
 				carroEntrada = -1;
 				carros[carroEntrada].estado = FORA;
