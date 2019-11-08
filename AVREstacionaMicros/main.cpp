@@ -108,7 +108,7 @@ int main(void)
 	
 	int valorAguardaResposta=0;
 	
-	DDRB = 1<<7;
+	DDRB |= 1<<7;
 	
 	serialSetup();
 	lcd_config();
@@ -281,7 +281,10 @@ int main(void)
 		
 		
 		if(carroEntrada != -1){
-			if(horaCarroSaida.diffSec(relogio) > 40){
+				lcdWritePos("ot",0,0);
+			if(horaCarroSaida.diffSec(relogio) > 10){
+				//if(horaCarroSaida.diffSec(relogio)%2){
+
 				if(relogio.seg%2){
 					PORTB |= 1<<7;
 				} else {
@@ -298,6 +301,7 @@ int main(void)
 		}
 		if(carroSaida != -1){
 			if(horaCarroSaida.diffSec(relogio) > 40){
+				escreveVetor("começa a piscar", 16);
 				if(relogio.seg%2){
 					PORTB |= 1<<7;
 				} else {
@@ -351,17 +355,21 @@ int main(void)
 				}
 				char horastr[3];
 				if(horaLetreiro.diffSec(relogio) >= 1 /*|| 1*/){
-					
+					//prints horario:
 					setCursor(0,1);
+					//lcdWrite("        "); //clear local, posicao do horario
+					setCursor(0,1);
+					if(relogio.hora <10) lcdWritechar('0');
 					itoa(relogio.hora, horastr, 10);
 					lcdWrite(horastr);
 					lcdWritechar(':');
+					if(relogio.min <10) lcdWritechar('0');
 					itoa(relogio.min, horastr, 10);
 					lcdWrite(horastr);
 					lcdWritechar(':');
+					if(relogio.seg <10) lcdWritechar('0');
 					itoa(relogio.seg, horastr, 10);
-					lcdWrite(horastr);
-										
+					lcdWrite(horastr);		
 
 					//itoa(horaLetreiro.hora, horastr, 10);
 					//lcdWrite(horastr);
@@ -533,6 +541,7 @@ int main(void)
 					clear_display();
 					lcdWritePos("Desligado", 4, 1);
 				}
+				break;
 			case SAIUENTRADA:
 				estado = ESTADOINICIAL;
 				/*
