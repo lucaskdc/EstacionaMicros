@@ -195,13 +195,13 @@ int main(void)
 								carros[posCarro].estado = NASAIDA;
 								carroSaida= posCarro;
 								horaCarroSaida.setByDataHora(relogio);
-
 								
 								if(desbloqueado){
 									if(carros[posCarro].calculaPgto(relogio) > 0){
 										clear_display();
 										lcdWrite("Realize o Pagamento");
-										estado = NUMEROCARTAO;
+										lcdWritePos("Aperte \"A\".", 0, 1);
+										atrasoms(1000);
 										telaNova = 1;
 									}else{
 										cancelaAbre(byteLido);
@@ -470,7 +470,6 @@ int main(void)
 						
 						if(carroPgto == -1){
 							clear_display();
-							
 							lcdWritePos("Placa estranha",0,0);
 							lcdWritePos(numeroPlaca, 0,1);
 							atrasoms(1000);
