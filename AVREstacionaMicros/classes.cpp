@@ -140,12 +140,12 @@ int Veiculo::calculaPgto(DataHora agora){//valor a pagar
 		//}
 	}
 	
-	//if(this->estEspecial & this->estEspecialAntes){
-	//	pagar += (minutos/30+1)*2;
-	//}
+	if(this->estEspecial && this->estEspecialAntes){
+		pagar += (minutos/30+1)*2;
+	}
 	
-	//if(this->dataPagamento.diffMin(agora)<=15)
-	//	pagar = 0;
+	if(this->dataPagamento.diffMin(agora)<=15)
+		pagar = 0;
 		
 	//pagar = 10;
 	//pagar = 10+((minutos-60)/30+1)*4;
@@ -164,7 +164,7 @@ int Veiculo::calculaPgto(DataHora agora){//valor a pagar
 
 int Veiculo::pagar(int valor, DataHora agora){
 	if(valor > 0)
-		this->dataPagamento = agora;
+		this->dataPagamento.setByDataHora(agora);
 	this->valorpago += valor;
 	return this->valorpago;
 }
