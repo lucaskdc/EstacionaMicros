@@ -9,7 +9,7 @@
 #ifndef TECLADO_H_
 #define TECLADO_H_
 
-	#include <avr/io.h>,
+	#include <avr/io.h>
 
 	#include <avr/interrupt.h>
 

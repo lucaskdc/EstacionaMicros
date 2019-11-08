@@ -206,6 +206,8 @@ char le_teclado(){
 			leitura = converte_leitura(linha,coluna);
 			return leitura;
 		}
+		
+		
 	return -1;
 }
   

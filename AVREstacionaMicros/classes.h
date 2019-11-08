@@ -26,8 +26,8 @@ class DataHora{
 	void setByDataHoraZeroSeconds(DataHora min);
 	DataHora somaMin(int minutos); //retorna data somada com minutos (não muda a data chamada)
 	void incSeg(char segundos=1);
-	long long int diffMin(DataHora comp); //calcula diferença em minutos comp - this
-	long long int diffSec(DataHora comp); //calcula diferença em minutos comp - this
+	int diffMin(DataHora comp); //calcula diferença em minutos comp - this
+	int diffSec(DataHora comp); //calcula diferença em minutos comp - this
 };
 
 class Veiculo {
@@ -35,17 +35,18 @@ class Veiculo {
 	char placa[8];
 	DataHora dataEntrada;
 	DataHora dataPagamento;
-	int valorpago=0;
-	char estado=FORA;
-	char estEspecial = 0;
-	char estEspecialAntes=0;
+	int valorpago;
+	char estado;
+	char estEspecial;
+	char estEspecialAntes;
 	
-	Veiculo(char _placa[7]="###0000", DataHora _dataEntrada = DataHora());
+	Veiculo(DataHora _dataEntrada = DataHora());
 	void pagou(DataHora _dataPagamento);
 	char ehEspecial();
 	char ehPlacaIgual(char compara[]);
 	int pagar(int valor, DataHora agora);
 	int calculaPgto(DataHora agora);
+	void setPlaca(char _placa[]);
 	private:
 	
 };

@@ -6,7 +6,10 @@
  */ 
 
 #include "classes.h"
-
+#include "serial.h"
+#define debugMin 1
+#define debugPagar 1
+#define debugSec 0
 DataHora::DataHora(char _dia, char _mes, char _hora, char _min){
 		dia =_dia;
 		mes = _mes;
@@ -55,19 +58,33 @@ DataHora DataHora::somaMin(int minutos){
 	}
 	return retorno;
 }
-long long int DataHora::diffMin(DataHora comp){
-	long long int minutosTotal = (comp.dia - this->dia)*60*24; //Dias
-	minutosTotal += (comp.mes - this->mes)*24*60*30; //Meses de 30 dias
-	minutosTotal += (comp.hora - this->hora)*60; //Horas
+int DataHora::diffMin(DataHora comp){
+	//int minutosTotal = (comp.dia - this->dia)*60*24; //Dias
+	//minutosTotal += (comp.mes - this->mes)*24*60*30; //Meses de 30 dias
+	int minutosTotal = (comp.hora - this->hora)*60; //Horas
 	minutosTotal += (comp.min - this->min); //Minutos
+	#if debugMin == 1
+		escreveVetor("diffMin",8);
+		//escreve(minutosTotal>>8);
+		escreve((char)minutosTotal);
+		escreve('\n');
+	#endif
 	return minutosTotal;
 }
-long long int DataHora::diffSec(DataHora comp){
-	long long int segundos = (comp.dia - this->dia)*60*24*60; //Dias
+int DataHora::diffSec(DataHora comp){
+	int segundos = (comp.dia - this->dia)*60*24*60; //Dias
 	segundos += (comp.mes - this->mes)*24*60*30*60; //Meses de 30 dias
 	segundos += (comp.hora - this->hora)*60*60; //Horas
 	segundos += (comp.min - this->min)*60; //Minutos
 	segundos += (comp.seg - this->seg);
+	#if debugSec == 1
+		escreveVetor("diffMin",8);
+		escreve(segundos>>24);
+		escreve(segundos>>16);
+		escreve(segundos>>8);
+		escreve(segundos);
+		escreve('\n');
+	#endif
 	return segundos;
 }
 
@@ -91,18 +108,23 @@ void DataHora::incSeg(char segundos){
 	}
 }
 
-Veiculo::Veiculo(char _placa[7], DataHora _dataEntrada){
+Veiculo::Veiculo(DataHora _dataEntrada){
+	this->valorpago=0;
+	this->estEspecial = 0;
+	this->estEspecialAntes=0;
+	this->estado=FORA;
 	for(int i=0; i<7; i++){
-		this->placa[i] = _placa[i];
+		this->placa[i] = '#';
 	}
 	this->placa[7] = '\0';
 	this->dataEntrada = _dataEntrada;
 }
 
-int Veiculo::calculaPgto(DataHora agora){
+int Veiculo::calculaPgto(DataHora agora){//valor a pagar
 	//se retornar 0, libera saída, caso contrário cobra pagamento
-	int minutos = dataEntrada.diffMin(agora);
-	int tmp;
+	int minutos = this->dataEntrada.diffMin(agora);
+	//int minutos = 70;
+	//int tmp;
 	int pagar=0;
 
 	if(minutos<=15){		
@@ -114,16 +136,30 @@ int Veiculo::calculaPgto(DataHora agora){
 		//	tmp = (minutos/30+1)*30; //arredonda para cima
 		//	pagar = 10+((tmp-60)/30)*4-this->valorpago;
 		//}else{
-			pagar = 10+((minutos-60)/30+1)*4-this->valorpago; //0 a 29 e 30 a 59...
+			pagar = (10+((minutos-60)/30+1)*4) - this->valorpago; //0 a 29 e 30 a 59...
 		//}
 	}
 	
-	if(this->estEspecial & this->estEspecialAntes){
-		pagar += (minutos/30+1)*2;
-	}
+	//if(this->estEspecial & this->estEspecialAntes){
+	//	pagar += (minutos/30+1)*2;
+	//}
 	
-	if(this->dataPagamento.diffMin(agora)<=15)
-		pagar = 0;
+	//if(this->dataPagamento.diffMin(agora)<=15)
+	//	pagar = 0;
+		
+	//pagar = 10;
+	//pagar = 10+((minutos-60)/30+1)*4;
+	//pagar = (int)(10+((minutos-60)/30+1)*4);
+	//pagar = (int)(this->valorpago);
+
+	#if debugPagar == 1
+		escreveVetor("calculaPgto",13);
+		//escreve(minutosTotal>>8);
+		escreve((char)pagar);
+		escreve('\n');
+	#endif
+	
+	return pagar;
 }
 
 int Veiculo::pagar(int valor, DataHora agora){
@@ -146,9 +182,16 @@ char Veiculo::ehEspecial(){
 
 char Veiculo::ehPlacaIgual(char compara[]){ 
 	//retorna 1 se placa for igual ao parâmetro compara
-	for(int i=0; i<8; i++){
+	for(int i=0; i<7; i++){
 		if(compara[i] != this->placa[i])
 			return 0;
 	}
 	return 1;
+}
+
+void Veiculo::setPlaca(char _placa[]){
+	for(int i=0; i<7; i++){
+		this->placa[i] = _placa[i];
+	}
+	placa[7]='\0';
 }
