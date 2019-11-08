@@ -192,7 +192,7 @@ char Veiculo::ehPlacaIgual(char compara[]){
 
 char Veiculo::ehNumeroPlacaIgual(char num[]){
 	for(int i=3; i<7; i++){
-		if(num[i] != this->placa[i])
+		if(num[i-3] != this->placa[i])
 			return 0;
 	}
 	return 1;
