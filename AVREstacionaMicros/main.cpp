@@ -36,6 +36,7 @@ int procuraPlaca(char placaProcurada[]);
 void verificaResposta(char respostaEsperada[], char n, char mensagem[]);
 void pedeMapa(char c);
 char countMapa(char mapa[3][5], char contAndar[3], char c);
+void escreveNota(Veiculo carro);
 
 char desbloqueado=0;
 char cancelaAberta=0;
@@ -538,6 +539,7 @@ int main(void)
 						cancelaAbre('2');
 						estado = ESTADOINICIAL;
 						telaNova = 1;
+						escreveNota(carros[posCarro]);
 					}else if(!strcmp(senhaResposta, "Saldo Invalido")){
 						estado = ESTADOINICIAL;
 						telaNova = 1;
@@ -683,3 +685,18 @@ char countMapa(char mapa[3][5], char contAndar[3], char c){
 	contAndar[andar] = cont;
 	return cont;
 }
+void escreveNota(Veiculo carro){
+
+char pagamento[4];
+
+escreveVetor("EI",2);
+escreve(0);
+escreve(16);
+
+
+escreveVetor(carro.placa,8);
+itoa(carro.valorpago,pagamento,10);
+escreveVetor(pagamento,4);
+escreveVetor("aaaa",4);
+};
+
