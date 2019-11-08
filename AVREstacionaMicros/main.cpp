@@ -109,7 +109,10 @@ int main(void)
 	int valorAguardaResposta=0;
 	
 	DDRB |= 1<<7;
-	
+	DDRF |= 1<<0; // LED VERDE
+	DDRF |= 1<<1; // LED AMARELO
+	DDRF |= 1<<2; // LED VERMELHO
+
 	serialSetup();
 	lcd_config();
 	timer1_config();
