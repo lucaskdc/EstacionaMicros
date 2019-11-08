@@ -168,6 +168,7 @@ int main(void)
 						switch(byteLido){
 							case '1':
 								carros[posCarro].estado = NAENTRADA;
+								carros[posCarro].valorpago = 0; //Valor pago é 0 quando chega na cancela para entrar.
 								carroEntrada = posCarro;
 								horaCarroEntrada.setByDataHora(relogio);
 								
@@ -228,8 +229,8 @@ int main(void)
 							case '2':
 								if(carros[posCarro].estEspecial)
 									carros[posCarro].estEspecialAntes=1;
-								carroSaida = -1;
 								carros[posCarro].estado = FORA;
+								carroSaida = -1;
 								estado = SAIUSAIDA;
 								break;
 						}
