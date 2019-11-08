@@ -149,6 +149,7 @@ int main(void)
 						byteLido=le(); //1 entrada, 2 saída
 						leVetor(vetor, 8); //Lê placa 7char+\0
 						escreveVetor("EN", 2); //Resposta para Servidor
+						lcdWritePos("                ", 0,0); //clear parcial display
 						lcdWritePos(vetor, 0,0);
 						posCarro = procuraPlaca(vetor);
 						lcdWrite(" ");
@@ -289,7 +290,7 @@ int main(void)
 		
 		
 		if(carroEntrada != (int)-1){
-			if(horaCarroEntrada.diffSec(relogio) > (int)10){
+			if(horaCarroEntrada.diffSec(relogio) > (int)40){
 				
 				if(relogio.seg%2){
 					PORTF |= 1<<0; // LED VERDE ACENDE (CANCELA DE ENTRADA)
@@ -299,7 +300,7 @@ int main(void)
 			}else{
 				PORTF &= ~(1<<0); // LED VERDE APAGA (CANCELA DE ENTRADA)
 			}
-			if(horaCarroEntrada.diffSec(relogio) > (int)20){
+			if(horaCarroEntrada.diffSec(relogio) > (int)60){
 				cancelaFecha('1');
 				carros[carroEntrada].estado = FORA;
 				carroEntrada = -1;
@@ -374,7 +375,7 @@ int main(void)
 //					lcdWritecharPos(horaLetreiro.seg/10+0x30, 3,1);
 //					lcdWritecharPos(horaLetreiro.seg%10+0x30, 4,1);
 				}
-				if(ultMostraVagas.diffSec(relogio)>15){
+				if(ultMostraVagas.diffSec(relogio)>20){
 					ultMostraVagas.setByDataHora(relogio);
 					estado = VAGAS;
 					telaNova = 1;
@@ -393,23 +394,22 @@ int main(void)
 							tmp = 36-contAndar[0];
 							lcdWritechar(tmp/10+0x30);
 							lcdWritechar(tmp%10+0x30);
-							//atrasoms(1000);
 							break;
-						case 2:				
+						case 2:
+						case 3:				
 							lcdWritePos("Vagas 1 andar:",0,0);
 							tmp = 36-contAndar[1];
 							lcdWritechar(tmp/10+0x30);
 							lcdWritechar(tmp%10+0x30);
-							//atrasoms(1000);
 							break;
-						case 3:			
-
+						case 4:
+						case 5:			
 							lcdWritePos("Vagas 2 andar:",0,0);
 							tmp = 36-contAndar[2];
 							lcdWritechar(tmp/10+0x30);
 							lcdWritechar(tmp%10+0x30);
-							//atrasoms(1000);
 							break;
+						case 6:
 						default:
 							estado = ESTADOINICIAL;
 							telaNova = 1;
