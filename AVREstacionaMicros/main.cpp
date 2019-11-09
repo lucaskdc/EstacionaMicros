@@ -627,10 +627,10 @@ int main(void)
 						estado = ESTADOINICIAL;
 					}else if(!strcmp(senhaResposta, "OK")){
 						carros[carroPgto].pagar(valorAguardaResposta, relogio);
-						cancelaAbre('2');
+						//cancelaAbre('2');
 						estado = ESTADOINICIAL;
 						telaNova = 1;
-						escreveNota(carros[carroPgto]);
+						//escreveNota(carros[carroPgto]);
 					}else if(!strcmp(senhaResposta, "Saldo Invalido")){
 						estado = ESTADOINICIAL;
 						telaNova = 1;
