@@ -612,7 +612,7 @@ int main(void)
 						cancelaAbre('2');
 						estado = ESTADOINICIAL;
 						telaNova = 1;
-						escreveNota(carros[carroPgto]);
+						//escreveNota(carros[carroPgto]);
 					}else if(!strcmp(senhaResposta, "Saldo Invalido")){
 						estado = ESTADOINICIAL;
 						telaNova = 1;
