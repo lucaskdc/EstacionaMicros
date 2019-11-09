@@ -765,7 +765,6 @@ char countMapa(char mapa[3][5], char contAndar[3], char c){
 	contAndar[andar] = cont;
 	return cont;
 }
-/*
 void escreveNota(Veiculo carro){
 
 	char pagamento[4];
@@ -779,47 +778,5 @@ void escreveNota(Veiculo carro){
 	itoa(carro.valorpago,pagamento,10);
 	escreveVetor(pagamento,4);
 	escreveVetor("aaaa",4);
-} */
+};
 
-void escreveNota(Veiculo carro){
-
-	char pagamento[3];
-	char min[3];
-	char hora[3];
-	char mandar[250];
-
-	int tempo_min = carro.dataEntrada.diffMin(carro.dataPagamento)%60;
-	int tempo_hora = carro.dataEntrada.diffMin(carro.dataPagamento)/60;
-
-	itoa(tempo_min,min,10);
-	itoa(tempo_hora,hora,10);
-	itoa(carro.valorpago,pagamento,10);
-
-	strcpy(mandar,"Placa carro: /n");
-	strcat(mandar,carro.placa);
-	strcat(mandar,"Valor pago: /n");
-	strcat(mandar,pagamento);
-	strcat(mandar,"Tempo no estacionamento: ");
-	strcat(mandar,hora);
-	strcat(mandar,":");
-	strcat(mandar,min);
-
-	lcdWritePos("aa",14,1);
-
-	escreveVetor("EI",2);
-	escreve('0');
-	escreve(strlen(mandar)+1);
-	escreveVetor(mandar,strlen(mandar)+1);
-
-
-	/*escreveVetor("Placa carro:");
-	escreveVetor(carro.placa,8);
-	escreveVetor("/n")
-	escreveVetor("Valor pago:")
-	escreveVetor(pagamento,3);
-	escreveVetor("/n")
-	escreveVetor("Tempo no estacionamento:")
-	escreveVetor("")
-	*/
-	//escreve('\0');
-}
